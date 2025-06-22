@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bingo Viewer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 2em;
+    }
+    h1 {
+      margin-bottom: 1em;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .cell {
+      border: 2px solid #333;
+      padding: 20px;
+      background: white;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    .cell.checked {
+      background: #ffe066;
+    }
+    .footer {
+      margin-top: 1em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Carte Bingo de <span id="viewer-name"></span></h1>
+  <div class="grid" id="bingo-grid"></div>
+  <div class="footer">Ta carte est sauvegardée sur cet appareil.</div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewer = urlParams.get('user') || 'inconnu';
+    document.getElementById("viewer-name").innerText = viewer;
+
+    const prompts = [
+      "Référence obscure",
+      "Fail en live",
+      "Sub surprise",
+      "Blague nulle",
+      "Gros bug",
+      "Clip automatique",
+      "Chat trop calme",
+      "Raid inattendu",
+      "Saucisse dans le chat",
+      "Blague sur le pseudo",
+      "Jeu qui crash",
+      "Moment épique",
+      "Interaction divine",
+      "Spam d'emotes",
+      "Musique qui tape",
+      "Stream en retard",
+      "Chatting trop long",
+      "Commande !ratée",
+      "Débat inutile",
+      "Pseudo imprononçable",
+      "Phrase culte",
+      "Nouveau follow",
+      "Pause pipi",
+      "Révélation lore",
+      "Coupure micro"
+    ];
+
+    // Générateur pseudo-aléatoire basé sur le nom
+    function seedRandom(seed) {
+      let h = 0;
+      for (let i = 0; i < seed.length; i++) {
+          h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+      }
+      return () => {
+          h ^= h << 13; h ^= h >> 17; h ^= h << 5;
+          return ((h >>> 0) / 4294967296);
+      }
+    }
+
+    const rand = seedRandom(viewer.toLowerCase());
+    const used = new Set();
+    const chosen = [];
+
+    while (chosen.length < 25) {
+      const index = Math.floor(rand() * prompts.length);
+      if (!used.has(index)) {
+        used.add(index);
+        chosen.push(prompts[index]);
+      }
+    }
+
+    const key = `bingo-${viewer}`;
+    const saved = JSON.parse(localStorage.getItem(key)) || [];
+
+    const grid = document.getElementById("bingo-grid");
+    chosen.forEach((text, i) => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerText = text;
+      if (saved.includes(i)) cell.classList.add("checked");
+
+      cell.addEventListener("click", () => {
+        if (saved.includes(i)) {
+          saved.splice(saved.indexOf(i), 1);
+          cell.classList.remove("checked");
+        } else {
+          saved.push(i);
+          cell.classList.add("checked");
+        }
+        localStorage.setItem(key, JSON.stringify(saved));
+      });
+
+      grid.appendChild(cell);
+    });
+  </script>
+</body>
+</html>
