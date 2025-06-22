@@ -165,16 +165,18 @@
   const bingoMessage = document.getElementById("bingo-message");
 
   if (hasRow || hasCol || hasDiag1 || hasDiag2) {
-    // Affiche le message si bingo détecté
-    bingoMessage.style.display = "block";
+    // Bingo détecté, afficher le message
+    if (bingoMessage.style.display !== "block") {
+      bingoMessage.style.display = "block";
 
-    confetti({
-      particleCount: 150,
-      spread: 100,
-      origin: { y: 0.6 }
-    });
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+    }
   } else {
-    // Sinon, cache le message (case décochée = plus de bingo)
+    // Aucun bingo détecté, cacher le message
     bingoMessage.style.display = "none";
   }
 }
