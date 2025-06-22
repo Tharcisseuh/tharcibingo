@@ -82,7 +82,7 @@
     <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
   </div>
     <div class="grid" id="bingo-grid"></div>
-    <div class="footer">Ta carte est sauvegardée chez moi ! N'hésite pas à me le dire en cas de soucis.</div>
+    <div class="footer">Ta carte est sauvegardée jusqu'à ce que tu vides le cache (je crois). En cas e soucis, n'hésites pas à me le dire !</div>
     <div id="bingo-message">🎉 BINGO ! 🎉</div>
 
 <script>
@@ -156,21 +156,28 @@
   }
 
   function checkForBingo() {
-    const size = 5;
-    const hasRow = grid.some(row => row.every(cell => cell.classList.contains("checked")));
-    const hasCol = [...Array(size).keys()].some(col => grid.every(row => row[col].classList.contains("checked")));
-    const hasDiag1 = grid.every((row, i) => row[i].classList.contains("checked"));
-    const hasDiag2 = grid.every((row, i) => row[size - 1 - i].classList.contains("checked"));
+  const size = 5;
+  const hasRow = grid.some(row => row.every(cell => cell.classList.contains("checked")));
+  const hasCol = [...Array(size).keys()].some(col => grid.every(row => row[col].classList.contains("checked")));
+  const hasDiag1 = grid.every((row, i) => row[i].classList.contains("checked"));
+  const hasDiag2 = grid.every((row, i) => row[size - 1 - i].classList.contains("checked"));
 
-    if (hasRow || hasCol || hasDiag1 || hasDiag2) {
-      document.getElementById("bingo-message").style.display = "block";
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.6 }
-      });
-    }
+  const bingoMessage = document.getElementById("bingo-message");
+
+  if (hasRow || hasCol || hasDiag1 || hasDiag2) {
+    // Affiche le message si bingo détecté
+    bingoMessage.style.display = "block";
+
+    confetti({
+      particleCount: 150,
+      spread: 100,
+      origin: { y: 0.6 }
+    });
+  } else {
+    // Sinon, cache le message (case décochée = plus de bingo)
+    bingoMessage.style.display = "none";
   }
+}
 
   // Réinitialisation avec nouveau tirage
   const resetBtn = document.createElement("button");
