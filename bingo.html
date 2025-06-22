@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nova+Oval&display=swap" rel="stylesheet">
+  <title>✨Tharcibingo✨</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      font-family: "Nova Oval", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 2em;
+    }
+    h1 {
+      margin-bottom: 1em;
+      color: #420616;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .cell {
+      border: 2px solid #333;
+      padding: 20px;
+      background: rgb(255, 179, 179);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+    }
+    .cell.checked {
+      background: #abfffc;
+    }
+    .footer {
+      margin-top: 1em;
+      color: #420616;
+    }
+    #bingo-message {
+      display: none;
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4rem;
+      color: gold;
+      text-shadow: 2px 2px 10px #000;
+      z-index: 1000;
+      animation: pop 1s ease forwards;
+    }
+    @keyframes pop {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
+  <div class="grid" id="bingo-grid"></div>
+  <div class="footer">Ta carte est sauvegardée sur cet appareil.</div>
+  <div id="bingo-message">🎉 BINGO ! 🎉</div>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const viewer = urlParams.get('user') || 'inconnu';
+  document.getElementById("viewer-name").innerText = viewer;
+
+  const prompts = [
+    "Chute fatale...", "Boss du premier coup !", "Infliger un coup critique", "Tuer un ennemi d'un seul coup",
+    "Invoquer un ou des Esprit(s)", "Mourir d'un boss/ennemi jugé 'facile'", "Mourir d'un piège", "'Ennemi Abattu'",
+    "'Demi-dieu abattu'", "'Ennemi majeur abattu'", "'Légende abattue'", "'Dieu occis'", "Mourir d'un statut",
+    "Taper avec un bouclier", "Utiliser une sorcellerie", "Utiliser une incantation", "Boss sans potions",
+    "Visiter des catacombes...", "Visiter des grottes...", "Tromper un ennemi avec le Voile Mimétique",
+    "Pousser un ennemi dans le vide", "Bug ou glitch", "Invoquer un NPC", "Vaincre un boss duo !",
+    "Vaincre un envahisseur", "Parer un ennemi", "Mourir d'un seul coup", "Mur illusoire",
+    "*met les lunettes pour plus de skill*", "Coffre piégé", "FASHION TIME !",
+    "'C'est pas moi, c'est le jeu/manette'", "*se trompe de touche*", "Morte deux fois de suite sur le même ennemi...",
+    "Réalloue ses points de stats", "Améliore une arme au max !", "Améliore la potion au max !",
+    "'Faut aller se faire foutre'", "'Ça devient complexe...'", "'Oh la la...'", "*ne finira jamais sa phrase*"
+  ];
+
+  const key = `bingo-${viewer}`;
+  const data = JSON.parse(localStorage.getItem(key)) || {};
+
+  let chosen = data.prompts;
+  if (!chosen || chosen.length !== 25) {
+    chosen = [];
+    const used = new Set();
+    while (chosen.length < 25) {
+      const index = Math.floor(Math.random() * prompts.length);
+      if (!used.has(index)) {
+        used.add(index);
+        chosen.push(prompts[index]);
+      }
+    }
+    data.prompts = chosen;
+    data.checked = [];
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  const grid = [];
+  const gridElement = document.getElementById("bingo-grid");
+  gridElement.innerHTML = "";
+
+  for (let row = 0; row < 5; row++) {
+    const rowCells = [];
+    for (let col = 0; col < 5; col++) {
+      const i = row * 5 + col;
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerText = chosen[i];
+      if (data.checked && data.checked.includes(i)) cell.classList.add("checked");
+
+      cell.addEventListener("click", () => {
+        if (!data.checked) data.checked = [];
+        if (data.checked.includes(i)) {
+          data.checked.splice(data.checked.indexOf(i), 1);
+          cell.classList.remove("checked");
+        } else {
+          data.checked.push(i);
+          cell.classList.add("checked");
+        }
+        localStorage.setItem(key, JSON.stringify(data));
+        checkForBingo();
+      });
+
+      gridElement.appendChild(cell);
+      rowCells.push(cell);
+    }
+    grid.push(rowCells);
+  }
+
+  function checkForBingo() {
+    const size = 5;
+    const hasRow = grid.some(row => row.every(cell => cell.classList.contains("checked")));
+    const hasCol = [...Array(size).keys()].some(col => grid.every(row => row[col].classList.contains("checked")));
+    const hasDiag1 = grid.every((row, i) => row[i].classList.contains("checked"));
+    const hasDiag2 = grid.every((row, i) => row[size - 1 - i].classList.contains("checked"));
+
+    if (hasRow || hasCol || hasDiag1 || hasDiag2) {
+      document.getElementById("bingo-message").style.display = "block";
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 }
+      });
+    }
+  }
+
+  // Réinitialisation avec nouveau tirage
+  const resetBtn = document.createElement("button");
+  resetBtn.innerText = "🔄 Nouvelle carte aléatoire";
+  resetBtn.style.marginTop = "1em";
+  resetBtn.style.padding = "0.5em 1em";
+  resetBtn.style.border = "none";
+  resetBtn.style.borderRadius = "10px";
+  resetBtn.style.backgroundColor = "#f55";
+  resetBtn.style.color = "white";
+  resetBtn.style.cursor = "pointer";
+  resetBtn.addEventListener("click", () => {
+    localStorage.removeItem(key);
+    location.reload();
+  });
+
+  document.body.appendChild(resetBtn);
+</script>
+
+</body>
+</html>
