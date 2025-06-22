@@ -1,5 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
+<style>
+   .header-with-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1em;
+    }
+    .logo {
+      height: 100px;
+      width: auto;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      text-align: center;
+      color: #420616;
+    }
+</style>
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,14 +35,11 @@
       text-align: center;
       padding: 2em;
     }
-    h1 {
-      margin-bottom: 1em;
-      color: #420616;
-    }
     .grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 5px;
+      justify-content: center;
       max-width: 500px;
       margin: 0 auto;
     }
@@ -62,10 +77,13 @@
   </style>
 </head>
 <body>
-  <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
-  <div class="grid" id="bingo-grid"></div>
-  <div class="footer">Ta carte est sauvegardée sur cet appareil.</div>
-  <div id="bingo-message">🎉 BINGO ! 🎉</div>
+  <div class="header"></div>
+    <img src="https://raw.githubusercontent.com/Tharcisseuh/tharcibingo/main/logo-min.png" alt="logo" class="logo"/>
+    <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
+  </div>
+    <div class="grid" id="bingo-grid"></div>
+    <div class="footer">Ta carte est sauvegardée chez moi ! N'hésite pas à me le dire en cas de soucis.</div>
+    <div id="bingo-message">🎉 BINGO ! 🎉</div>
 
 <script>
   const urlParams = new URLSearchParams(window.location.search);
@@ -156,7 +174,7 @@
 
   // Réinitialisation avec nouveau tirage
   const resetBtn = document.createElement("button");
-  resetBtn.innerText = "🔄 Nouvelle carte aléatoire";
+  resetBtn.innerText = "🔄 À moi, une nouvelle carte !";
   resetBtn.style.marginTop = "1em";
   resetBtn.style.padding = "0.5em 1em";
   resetBtn.style.border = "none";
@@ -171,6 +189,5 @@
 
   document.body.appendChild(resetBtn);
 </script>
-
 </body>
 </html>
