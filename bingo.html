@@ -1,23 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-<style>
-   .header-with-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1em;
-    }
-    .logo {
-      height: 100px;
-      width: auto;
-    }
-    h1 {
-      margin-bottom: 1rem;
-      font-size: 1.8rem;
-      text-align: center;
-      color: #420616;
-    }
-</style>
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -27,114 +9,220 @@
   <title>✨Tharcibingo✨</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    body {
-      font-family: "Nova Oval", system-ui;
-      font-weight: 400;
-      font-style: normal;
-      background: #f5f5f5;
-      text-align: center;
-      padding: 2em;
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Nova Oval", system-ui;
+        font-weight: 400;
+        font-style: normal;
+        background: #f5f5f5;
     }
+
+    .container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        padding: 2em 1em;
+        box-sizing: border-box;
+    }
+
+    .logo {
+      height: 100px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #420616;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 5px;
-      justify-content: center;
-      max-width: 500px;
-      margin: 0 auto;
+      width: 90vmin;
+      aspect-ratio: 1;
     }
+
     .cell {
       border: 2px solid #333;
-      padding: 20px;
+      padding: 0.5em;
       background: rgb(255, 179, 179);
       cursor: pointer;
       user-select: none;
       transition: background 0.3s;
+      text-align: center;
+
+      font-size: clamp(0.6rem, 2vw, 1rem);
+      line-height: 1.1;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
+      
+      box-sizing: border-box !important;
     }
+
     .cell.checked {
       background: #abfffc;
     }
+
     .footer {
       margin-top: 1em;
       color: #420616;
+      text-align: center;
     }
+
     #bingo-message {
       display: none;
       position: fixed;
       top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 4rem;
+      font-size: clamp(2rem, 5vw, 3rem);
+      max-width: 95vw;
       color: gold;
       text-shadow: 2px 2px 10px #000;
+      text-align: center;
       z-index: 1000;
       animation: pop 1s ease forwards;
     }
-    @keyframes pop {
-      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 10px;
+      background-color: #f55;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 600px) {
+        .logo {
+            height: 70px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+        }
+
+        .cell {
+            padding: 0.7em;
+            font-size: 0.75rem;
+        } 
     }
   </style>
 </head>
+
 <body>
-  <div class="header"></div>
-    <img src="https://raw.githubusercontent.com/Tharcisseuh/tharcibingo/main/logo-min.png" alt="logo" class="logo"/>
-    <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
-  </div>
-    <div class="grid" id="bingo-grid"></div>
-    <div class="footer">Ta carte est sauvegardée jusqu'à ce que tu vides le cache (je crois). En cas de soucis, n'hésites pas à me le dire !</div>
-    <div id="bingo-message">🎉 BINGO ! 🎉</div>
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/Tharcisseuh/tharcibingo/main/logo-min.png" alt="logo" class="logo"/>
+        <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
+        <div class="grid" id="bingo-grid"></div>
+        <div class="footer">Ta carte est sauvegardée jusqu'à ce que tu vides le cache (je crois). En cas de souci, n'hésite pas à me le dire !</div>
+        <button id="resetBtn">🔄 À moi, une nouvelle carte !</button>
+        <div id="bingo-message"><span style="white-space: nowrap;">🎉 BINGO ! 🎉</span></div>
+    </div>
 
 <script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const viewer = urlParams.get('user') || 'inconnu';
-  document.getElementById("viewer-name").innerText = viewer;
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewer = urlParams.get('user') || 'inconnu';
+    document.getElementById("viewer-name").innerText = viewer;
 
-  const prompts = [
-    "Chute fatale...", "Boss du premier coup !", "Infliger un coup critique", "Tuer un ennemi d'un seul coup",
-    "Invoquer un ou des Esprit(s)", "Mourir d'un boss/ennemi jugé 'facile'", "Mourir d'un piège", "'Ennemi Abattu'",
-    "'Demi-dieu abattu'", "'Ennemi majeur abattu'", "'Légende abattue'", "'Dieu occis'", "Mourir d'un statut",
-    "Taper avec un bouclier", "Utiliser une sorcellerie", "Utiliser une incantation", "Boss sans potions",
-    "Visiter des catacombes...", "Visiter des grottes...", "Tromper un ennemi avec le Voile Mimétique",
-    "Pousser un ennemi dans le vide", "Bug ou glitch", "Invoquer un NPC", "Vaincre un boss duo !",
-    "Vaincre un envahisseur", "Parer un ennemi", "Mourir d'un seul coup", "Mur illusoire",
-    "*met les lunettes pour plus de skill*", "Coffre piégé", "FASHION TIME !",
-    "'C'est pas moi, c'est le jeu/manette'", "*se trompe de touche*", "Morte deux fois de suite sur le même ennemi...",
-    "Réalloue ses points de stats", "Améliore une arme au max !", "Améliore la potion au max !",
-    "'Faut aller se faire foutre'", "'Ça devient complexe...'", "'Oh la la...'", "*ne finira jamais sa phrase*"
-  ];
+    const prompts = [
+      "Chute fatale...",
+      "Boss du premier coup !",
+      "Infliger un coup critique",
+      "Tuer un ennemi d'un seul coup",
+      "Invoquer un ou des Esprit(s)",
+      "Mourir d'un boss/ennemi jugé 'facile'",
+      "Mourir d'un piège",
+      "'Ennemi Abattu'",
+      "'Demi-dieu abattu'",
+      "'Ennemi majeur abattu'",
+      "'Légende abattue'",
+      "'Dieu occis'",
+      "Mourir d'un statut",
+      "Taper avec un bouclier",
+      "Utiliser une sorcellerie",
+      "Utiliser une incantation",
+      "Boss sans potions",
+      "Visiter des catacombes...",
+      "Visiter des grottes...",
+      "Tromper un ennemi avec le Voile Mimétique",
+      "Pousser un ennemi dans le vide",
+      "Bug ou glitch",
+      "Invoquer un NPC",
+      "Vaincre un boss duo !",
+      "Vaincre un envahisseur",
+      "Parer un ennemi",
+      "Mourir d'un seul coup",
+      "Mur illusoire",
+      "*met les lunettes pour plus de skill*",
+      "Coffre piégé",
+      "FASHION TIME !",
+      "'C'est pas moi, c'est le jeu/manette'",
+      "*se trompe de touche*",
+      "Morte deux fois de suite sur le même ennemi...",
+      "Réalloue ses points de stats",
+      "Améliore une arme au max !",
+      "Améliore la potion au max !",
+      "'Faut aller se faire foutre'",
+      "'Ça devient complexe...'",
+      "'Oh la la...'",
+      "*ne finira jamais sa phrase*",
+      "'tulututu~' *chantonne*",
+      "'FIFRELIN !'",
+      "Faire tourner la Routourne Infernale",
+      "Tuer un scarabée (le pauvre)",
+      "Acheter une arme",
+      "Acheter une pièce d'armure",
+      "Acheter une compétence d'arme",
+      "Améliorer une arme spécifiquement pour un boss",
+      "Réalloue ses potions",
+    ];
 
-  const key = `bingo-${viewer}`;
-  const data = JSON.parse(localStorage.getItem(key)) || {};
+    const key = `bingo-${viewer}`;
+    const data = JSON.parse(localStorage.getItem(key)) || {};
+    let chosen = data.prompts;
 
-  let chosen = data.prompts;
-  if (!chosen || chosen.length !== 25) {
-    chosen = [];
-    const used = new Set();
-    while (chosen.length < 25) {
-      const index = Math.floor(Math.random() * prompts.length);
-      if (!used.has(index)) {
-        used.add(index);
-        chosen.push(prompts[index]);
+    if (!chosen || chosen.length !== 25) {
+      chosen = [];
+      const used = new Set();
+      while (chosen.length < 25) {
+        const index = Math.floor(Math.random() * prompts.length);
+        if (!used.has(index)) {
+          used.add(index);
+          chosen.push(prompts[index]);
+        }
       }
+      data.prompts = chosen;
+      data.checked = [];
+      localStorage.setItem(key, JSON.stringify(data));
     }
-    data.prompts = chosen;
-    data.checked = [];
-    localStorage.setItem(key, JSON.stringify(data));
-  }
 
-  const grid = [];
-  const gridElement = document.getElementById("bingo-grid");
-  gridElement.innerHTML = "";
+    const grid = [];
+    const gridElement = document.getElementById("bingo-grid");
+    gridElement.innerHTML = "";
 
-  for (let row = 0; row < 5; row++) {
-    const rowCells = [];
-    for (let col = 0; col < 5; col++) {
-      const i = row * 5 + col;
+    for (let i = 0; i < 25; i++) {
       const cell = document.createElement("div");
       cell.className = "cell";
       cell.innerText = chosen[i];
-      if (data.checked && data.checked.includes(i)) cell.classList.add("checked");
+      if (data.checked && data.checked.includes(i)) {
+        cell.classList.add("checked");
+      }
 
       cell.addEventListener("click", () => {
         if (!data.checked) data.checked = [];
@@ -150,53 +238,35 @@
       });
 
       gridElement.appendChild(cell);
-      rowCells.push(cell);
+      grid.push(cell);
     }
-    grid.push(rowCells);
-  }
 
-  function checkForBingo() {
-  const size = 5;
-  const hasRow = grid.some(row => row.every(cell => cell.classList.contains("checked")));
-  const hasCol = [...Array(size).keys()].some(col => grid.every(row => row[col].classList.contains("checked")));
-  const hasDiag1 = grid.every((row, i) => row[i].classList.contains("checked"));
-  const hasDiag2 = grid.every((row, i) => row[size - 1 - i].classList.contains("checked"));
+    function checkForBingo() {
+      const rows = 5;
+      const hasRow = [...Array(rows).keys()].some(r =>
+        [...Array(rows).keys()].every(c => grid[r * 5 + c].classList.contains("checked"))
+      );
+      const hasCol = [...Array(rows).keys()].some(c =>
+        [...Array(rows).keys()].every(r => grid[r * 5 + c].classList.contains("checked"))
+      );
+      const hasDiag1 = [...Array(rows).keys()].every(i => grid[i * 5 + i].classList.contains("checked"));
+      const hasDiag2 = [...Array(rows).keys()].every(i => grid[i * 5 + (4 - i)].classList.contains("checked"));
 
-  const bingoMessage = document.getElementById("bingo-message");
-
-  if (hasRow || hasCol || hasDiag1 || hasDiag2) {
-    // Bingo détecté, afficher le message
-    if (bingoMessage.style.display !== "block") {
-      bingoMessage.style.display = "block";
-
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.6 }
-      });
+      const msg = document.getElementById("bingo-message");
+      if (hasRow || hasCol || hasDiag1 || hasDiag2) {
+        if (msg.style.display !== "block") {
+          msg.style.display = "block";
+          confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+        }
+      } else {
+        msg.style.display = "none";
+      }
     }
-  } else {
-    // Aucun bingo détecté, cacher le message
-    bingoMessage.style.display = "none";
-  }
-}
 
-  // Réinitialisation avec nouveau tirage
-  const resetBtn = document.createElement("button");
-  resetBtn.innerText = "🔄 À moi, une nouvelle carte !";
-  resetBtn.style.marginTop = "1em";
-  resetBtn.style.padding = "0.5em 1em";
-  resetBtn.style.border = "none";
-  resetBtn.style.borderRadius = "10px";
-  resetBtn.style.backgroundColor = "#f55";
-  resetBtn.style.color = "white";
-  resetBtn.style.cursor = "pointer";
-  resetBtn.addEventListener("click", () => {
-    localStorage.removeItem(key);
-    location.reload();
-  });
-
-  document.body.appendChild(resetBtn);
-</script>
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      localStorage.removeItem(key);
+      location.reload();
+    });
+  </script>
 </body>
 </html>
