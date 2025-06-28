@@ -51,6 +51,12 @@
       "*relance la démo*",
       "Démo avec qu'un seul niveau jouable",
       "Démo avec plusieurs niveaux jouables",
+      "'actuellement en développement'",
+      "crédits",
+      "Vidéo qui se lance toute seule",
+      "*aveuglée par la nostalgie*",
+      "'je veux rien savoir'",
+      "'appuyer sur start'",
     ];
 
     const key = `bingoPS2-${viewer}`;
