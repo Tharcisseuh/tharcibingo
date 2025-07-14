@@ -56,7 +56,8 @@
       "'mais on est où là ???'",
       "'oui, bon, oui'",
       "Jeu qui crash",
-      "Visiter des galeries...",
+      "Visiter des galeries..."
+        "'Allonzy, allonzons~'",
     ];
 
     const key = `bingo-${viewer}`;
