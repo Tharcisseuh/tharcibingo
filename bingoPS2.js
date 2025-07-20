@@ -59,6 +59,7 @@
       "'appuyer sur start'",
         "On peut se balancer tel un SINJ",
         "'Allonzy-Allonzons'",
+        "Pas de retry possible (faut relancer)",
     ];
 
     const key = `bingoPS2-${viewer}`;
