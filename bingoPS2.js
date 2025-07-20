@@ -28,7 +28,6 @@
       "Chargement jugé long",
       "Splashscreens (généralement ils abusent)",
       "Tharcitraduction douteuse",
-      "Démo qui se lance seule (celle du CD)",
       "Perso qui a du savon sous les pieds",
       "'Coming soon' ou équivalent FR",
       "*meurt dans la démo* (un vrai tharcicaca)",
@@ -40,6 +39,7 @@
       "Infiltration (aled)",
       "'Quelle horreur'",
       "Cinématique sous coc'",
+        "V'là la dose de cinématiques...",
       "Jeu de sport",
       "Jeu de combat",
       "Jeu d'aventure",
@@ -57,6 +57,8 @@
       "*aveuglée par la nostalgie*",
       "'je veux rien savoir'",
       "'appuyer sur start'",
+        "On peut se balancer tel un SINJ",
+        "'Allonzy-Allonzons'",
     ];
 
     const key = `bingoPS2-${viewer}`;
