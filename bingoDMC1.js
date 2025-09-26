@@ -38,6 +38,8 @@
       "*Olé bambino !*",
       "Envie de manger son micro",
       "Se tromper de touche",
+      "Obtenir un D en note de fin",
+      "*non non non nonnononon*",
     ];
 
     const key = `bingoDMC1-${viewer}`;
