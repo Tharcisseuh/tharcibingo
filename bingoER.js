@@ -74,7 +74,7 @@
       "'Ça m'énerve'",
     ];
 
-    const key = `bingo-${viewer}`;
+    const key = `bingoER-${viewer}`;
     const data = JSON.parse(localStorage.getItem(key)) || {};
     let chosen = data.prompts;
 
@@ -145,6 +145,6 @@
     }
 
     document.getElementById("resetBtn").addEventListener("click", () => {
-      localStorage.removeItem(`bingo-${viewer}`);
+      localStorage.removeItem(`bingoER-${viewer}`);
       location.reload();
     });
