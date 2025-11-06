@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nova+Oval&display=swap" rel="stylesheet">
+  <title>✨Tharcibingo édition Dark Souls III✨</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Nova Oval", system-ui;
+        font-weight: 400;
+        font-style: normal;
+        background: #f5f5f5;
+    }
+
+    .container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        padding: 2em 1em;
+        box-sizing: border-box;
+    }
+
+    .logo {
+      height: 100px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #420616;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      width: 90vmin;
+      aspect-ratio: 1;
+    }
+
+    .cell {
+      border: 2px solid #333;
+      padding: 0.5em;
+      background: rgb(255, 179, 179);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.3s;
+      text-align: center;
+
+      font-size: clamp(0.6rem, 2vw, 1rem);
+      line-height: 1.1;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
+      
+      box-sizing: border-box !important;
+    }
+
+    .cell.checked {
+      background: #abfffc;
+    }
+
+    .footer {
+      margin-top: 1em;
+      color: #420616;
+      text-align: center;
+    }
+
+    #bingo-message {
+      display: none;
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(2rem, 5vw, 3rem);
+      max-width: 95vw;
+      color: gold;
+      text-shadow: 2px 2px 10px #000;
+      text-align: center;
+      z-index: 1000;
+      animation: pop 1s ease forwards;
+    }
+
+    button {
+      margin-top: 1em;
+      padding: 0.5em 1em;
+      border: none;
+      border-radius: 10px;
+      background-color: #f55;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 600px) {
+        .logo {
+            height: 70px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+        }
+
+        .cell {
+            padding: 0.7em;
+            font-size: 0.75rem;
+        } 
+    }
+  </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://raw.githubusercontent.com/Tharcisseuh/tharcibingo/main/logo-min.png" alt="logo" class="logo"/>
+        <h1>Carte tharcibingo de <span id="viewer-name"></span></h1>
+        <div class="grid" id="bingo-grid"></div>
+        <div class="footer">Ta carte est sauvegardée jusqu'à ce que tu vides le cache (je crois). En cas de souci, n'hésite pas à me le dire !</div>
+        <button id="resetBtn">🔄 À moi, une nouvelle carte !</button>
+        <div id="bingo-message"><span style="white-space: nowrap;">🎉 BINGO ! 🎉</span></div>
+    </div>
+
+<script src="bingoDS3.js"></script>
+</body>
+</html>
